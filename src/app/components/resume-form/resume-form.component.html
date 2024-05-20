@@ -1,0 +1,390 @@
+<!-- ••[1]••••••••••••••••••••••••• resume-form.component.html •••••••••••••••••••••••••••••• -->
+
+<div class="app-resume-form max-w-4xl mx-auto">
+  <form
+    class="m-10 border-2 border-primary rounded-md p-6 shadow-lg shadow-primary"
+    [formGroup]="resumeForm"
+    (ngSubmit)="onSubmit($event, resumeForm)"
+  >
+    <!-- Accordion actions -->
+    <ng-container [ngTemplateOutlet]="accordionActionsRef"></ng-container>
+
+    <mat-accordion multi>
+      <!-- Prices -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title
+            ><mat-icon class="mr-4" color="accent">attach_money</mat-icon
+            >{{ label.prices }}</mat-panel-title
+          >
+        </mat-expansion-panel-header>
+        <ng-container
+          [ngTemplateOutlet]="pricesFieldsetRef"
+        ></ng-container>
+      </mat-expansion-panel>
+      <!-- Photos -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title
+            ><mat-icon class="mr-4" color="accent">photo_camera_back</mat-icon
+            >{{ label.photos }}</mat-panel-title
+          >
+        </mat-expansion-panel-header>
+        <ng-container [ngTemplateOutlet]="photosFieldsetRef"></ng-container>
+      </mat-expansion-panel>
+      
+    </mat-accordion>
+
+    <!-- Form actions -->
+    <ng-container [ngTemplateOutlet]="formActionsRef"></ng-container>
+  </form>
+</div>
+
+<!-- •••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+  RENDER TEMPLATES
+
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••• -->
+
+<!-- ••[3]••••• Prices •••••••••• -->
+<ng-template #pricesFieldsetRef [formGroup]="resumeForm">
+  <fieldset class="fieldset mt-4" formArrayName="prices">
+    <legend class="legend">
+      {{ label.prices }}
+    </legend>
+
+    <div class="flex justify-end">
+      <button
+        type="button"
+        mat-mini-fab
+        color="accent"
+        matTooltip="{{ label.addPrice }}"
+        matTooltipPosition="above"
+        type="button"
+        (click)="addPrice()"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    @for (PriceControl of resumeForm.controls.prices.controls; track
+    PriceControl) {
+
+    <fieldset
+      class="price fieldset border-slate-700 mt-4"
+      [formGroupName]="$index"
+    >
+      <legend class="font-normal capitalize px-2 text-slate-500">
+        {{ label.price }} ◦ {{ $index + 1 }}
+      </legend>
+      <div class="flex">
+        <div class="flex-1">
+          <!-- Title -->
+          <mat-form-field class="w-full" color="primary">
+            <mat-label>{{ label.priceTitle }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="title"
+              #priceTitleRef
+            />
+            @if (priceTitleRef.value) {
+            <button
+              type="button"
+              matSuffix
+              mat-icon-button
+              matTooltip="{{ label.clear }}"
+              matTooltipPosition="above"
+              (click)="
+                resumeForm.controls.prices
+                  .at($index)
+                  .controls.title.reset()
+              "
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            }
+            <mat-error>
+              <ng-container
+                *ngTemplateOutlet="
+                  formErrorsRef;
+                  context: {
+                    $implicit:
+                      resumeForm.controls.prices.at($index).controls.title
+                  }
+                "
+              ></ng-container>
+            </mat-error>
+          </mat-form-field>
+          <!-- Description -->
+          <mat-form-field class="w-full" color="primary">
+            <mat-label>{{ label.priceDescription }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="description"
+              #priceDescriptionRef
+            />
+            @if (priceDescriptionRef.value) {
+            <button
+              type="button"
+              matSuffix
+              mat-icon-button
+              matTooltip="{{ label.clear }}"
+              matTooltipPosition="above"
+              (click)="
+                resumeForm.controls.prices
+                  .at($index)
+                  .controls.description.reset()
+              "
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            }
+            <mat-error>
+              <ng-container
+                *ngTemplateOutlet="
+                  formErrorsRef;
+                  context: {
+                    $implicit:
+                      resumeForm.controls.prices.at($index).controls
+                        .description
+                  }
+                "
+              ></ng-container>
+            </mat-error>
+          </mat-form-field>
+          <!-- Tag -->
+          <mat-form-field class="w-full" color="primary">
+            <mat-label>{{ label.priceTag }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="tag"
+              #priceTagRef
+            />
+            @if (priceTagRef.value) {
+            <button
+              type="button"
+              matSuffix
+              mat-icon-button
+              matTooltip="{{ label.clear }}"
+              matTooltipPosition="above"
+              (click)="
+                resumeForm.controls.prices
+                  .at($index)
+                  .controls.tag.reset()
+              "
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            }
+            <mat-error>
+              <ng-container
+                *ngTemplateOutlet="
+                  formErrorsRef;
+                  context: {
+                    $implicit:
+                      resumeForm.controls.prices.at($index).controls
+                        .tag
+                  }
+                "
+              ></ng-container>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        @if ($count > 1) {
+        <div class="ml-4">
+          <button
+            type="button"
+            mat-mini-fab
+            color="primary"
+            matTooltip="{{ label.removePrice }}"
+            matTooltipPosition="above"
+            type="button"
+            (click)="removePrice($index)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        }
+      </div>
+    </fieldset>
+    }
+  </fieldset>
+</ng-template>
+
+<!-- ••[3]••••• Photos •••••••••• -->
+<ng-template #photosFieldsetRef [formGroup]="resumeForm">
+  <fieldset class="fieldset mt-4" formArrayName="photos">
+    <legend class="legend">
+      {{ label.photos }}
+    </legend>
+
+    <div class="flex justify-end">
+      <button
+        type="button"
+        mat-mini-fab
+        color="accent"
+        matTooltip="{{ label.addPhoto }}"
+        matTooltipPosition="above"
+        type="button"
+        (click)="addPhoto()"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    @for (photoControl of resumeForm.controls.photos.controls; track
+    photoControl) {
+
+    <div class="flex mt-4" [class.mt-6]="$first">
+      <div class="flex-1">
+        <!-- Photo -->
+        <mat-form-field class="w-full" color="primary">
+          <mat-label>{{ label.photo }}</mat-label>
+          <input matInput type="text" [formControlName]="$index" #photoRef />
+          @if (photoRef.value) {
+          <button
+            type="button"
+            matSuffix
+            mat-icon-button
+            matTooltip="{{ label.clear }}"
+            matTooltipPosition="above"
+            (click)="resumeForm.controls.photos.at($index).reset()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          }
+          <mat-error>
+            <ng-container
+              *ngTemplateOutlet="
+                formErrorsRef;
+                context: {
+                  $implicit: resumeForm.controls.photos.at($index)
+                }
+              "
+            ></ng-container>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      @if ($count > 1) {
+      <div class="ml-4">
+        <button
+          type="button"
+          mat-mini-fab
+          color="primary"
+          matTooltip="{{ label.removePhoto }}"
+          matTooltipPosition="above"
+          type="button"
+          (click)="removePhoto($index)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      }
+    </div>
+
+    }
+  </fieldset>
+</ng-template>
+
+<!-- Accordion actions -->
+<ng-template #accordionActionsRef>
+  <div class="mb-4 flex justify-end">
+    <button
+      type="button"
+      mat-stroked-button
+      class="mr-4"
+      color="primary"
+      type="button"
+      (click)="matAccordion.openAll()"
+    >
+      <mat-icon class="mr-4">unfold_more</mat-icon>
+      {{ label.expandAll }}
+    </button>
+    <button
+      type="button"
+      mat-stroked-button
+      color="primary"
+      type="button"
+      (click)="matAccordion.closeAll()"
+    >
+      <mat-icon class="mr-4">unfold_less</mat-icon>
+      {{ label.collapseAll }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- ••[3]••••• Form actions •••••••••• -->
+<ng-template #formActionsRef>
+  <div class="mt-4 flex">
+    <div class="saving-actions flex-1 flex flex-wrap gap-y-2">
+      <button
+        class="mr-4"
+        mat-stroked-button
+        color="primary"
+        type="button"
+        (click)="triggerResetForm()"
+      >
+        <mat-icon class="mr-4">restart_alt</mat-icon>
+        {{ label.reset }}
+      </button>
+      <button
+        type="button"
+        mat-stroked-button
+        class="mr-4"
+        color="primary"
+        type="button"
+        (click)="triggerLoadTestData()"
+      >
+        <mat-icon class="mr-4">science</mat-icon>
+        {{ label.loadTestData }}
+      </button>
+      <button
+        type="button"
+        mat-stroked-button
+        class="mr-4"
+        color="primary"
+        type="button"
+        (click)="triggerLoadForm()"
+      >
+        <mat-icon class="mr-4">cloud_download</mat-icon>
+        {{ label.load }}
+      </button>
+      <button
+        type="button"
+        mat-stroked-button
+        class="mr-4"
+        color="primary"
+        type="button"
+        (click)="triggerSaveForm()"
+      >
+        <mat-icon class="mr-4">cloud_upload</mat-icon>
+        {{ label.save }}
+      </button>
+    </div>
+    <button
+      mat-raised-button
+      color="accent"
+      type="submit"
+      [disabled]="resumeForm.invalid"
+    >
+      <mat-icon class="mr-4">send</mat-icon>
+      {{ label.submit }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- ••[3]••••• Form errors •••••••••• -->
+<ng-template #formErrorsRef let-formControl>
+  @if (formControl.hasError('required')) {
+  {{ label.requiredErrorField }}
+  } @else if (formControl.hasError('minlength')) {
+
+  {{ minLengthErrorFieldLabel(formControl.errors) }}
+
+  } @else if (formControl.hasError('pattern')) {
+  {{ label.patternErrorField }}
+  }
+</ng-template>
